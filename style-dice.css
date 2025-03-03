@@ -1,0 +1,165 @@
+/* 🔹 Styles globaux */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2c3e50;
+    color: white;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 🔹 Conteneur principal (2 colonnes) */
+.container {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* ✅ Colonne gauche + large que la droite */
+    gap: 20px;
+    width: 80%;
+    max-width: 1000px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 🔹 Colonne Gauche : Dés + Résultat */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 🔹 Colonne Droite : Historique */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 🔹 Sections */
+.section {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* 🔹 Grille de boutons pour les jets */
+.buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    background-color: #3498db;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* 🔹 Bouton neutre */
+.neutral {
+    background-color: #8e44ad;
+}
+
+.neutral:hover {
+    background-color: #6c3483;
+}
+
+/* 🔹 Nouvelle case Dé de Dégâts */
+#case-degat {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#case-degat label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+#case-degat input {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* 🔹 Résultat */
+.result-box {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 15px;
+    text-align: center;
+    background: rgba(46, 204, 113, 0.3);
+}
+
+/* 🔹 Historique des jets */
+#ecalorahisto {
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+#ecalorahisto li {
+    padding: 8px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* 🔹 Bouton de suppression historique */
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* 🔹 Bouton Retour (en bas à gauche) */
+.return-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #7f8c8d;
+}
+
+.return-btn:hover {
+    background-color: #5d6d7e;
+}
+
+/* 🔹 Responsive */
+@media (max-width: 800px) {
+    .container {
+        grid-template-columns: 1fr; /* ✅ Passe en colonne unique sur petits écrans */
+        width: 90%;
+    }
+
+    .return-btn {
+        position: static;
+        width: 100%;
+        margin-top: 15px;
+    }
+}

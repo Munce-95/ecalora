@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jets de Dés</title>
+    <link rel="stylesheet" href="style-dice.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Jets de Dés</h2>
+        <p id="welcome-message">Chargement...</p>
+
+        <!-- 🔹 Lancer un dé -->
+        <div class="section">
+            <h3>Choisissez une statistique :</h3>
+            <div class="buttons-grid">
+                <button onclick="lancerDe('corps_a_corps')">Corps à Corps</button>
+                <button onclick="lancerDe('distance')">Distance</button>
+                <button onclick="lancerDe('mentir_convaincre')">Mentir/Convaincre</button>
+                <button onclick="lancerDe('intimidation')">Intimidation</button>
+                <button onclick="lancerDe('intelligence')">Intelligence</button>
+                <button onclick="lancerDe('courir_sauter')">Courir/Sauter</button>
+                <button onclick="lancerDe('perception')">Perception</button>
+                <button onclick="lancerDe('reflexe')">Réflexe</button>
+                <button onclick="lancerDe('mental')">Mental</button>
+                <button class="neutral" onclick="lancerDeNeutre()">Jet Neutre (d100)</button>
+            </div>
+        </div>
+        
+        <div id="case-degat">
+            <label for="degatsInput">Type de dé pour les dégâts :</label>
+            <input type="number" id="degatsInput" placeholder="ex: 6, 8, 10..." min="2">
+            <button onclick="lancerDegats()">Lancer les dégâts</button>
+        </div>
+
+        <!-- 🔹 Résultat du lancer -->
+        <div class="section result-box">
+            <h3>Résultat :</h3>
+            <div id="resultat">Aucun jet effectué.</div>
+        </div>
+
+        <!-- 🔹 Historique des jets -->
+        <div class="section">
+            <h3>Historique des Jets :</h3>
+            <button class="delete-btn" onclick="resetHistorique()">🗑️ Supprimer l'historique</button>
+            <ul id="ecalorahisto"></ul>
+        </div>
+
+        <!-- 🔹 Retour Accueil -->
+        <div class="section">
+            <button class="return-btn" onclick="window.location.href='index.html'">🏠 Retour à l'Accueil</button>
+        </div>
+    </div>
+
+    <script defer src="dice.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche de personnage</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="character-sheet.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Fiche de personnage</h2>
+
+        <!-- 🔹 Nom du personnage -->
+        <label for="nomPersonnage">Nom :</label>
+        <input type="text" id="nomPersonnage" disabled>
+
+        <!-- 🔹 Statistiques -->
+        <fieldset>
+            <legend>Statistiques</legend>
+            <div class="stats-grid">
+                <label for="corps_a_corps">Corps à Corps:</label>
+                <input type="number" id="corps_a_corps" min="1" max="100">
+
+                <label for="distance">Distance:</label>
+                <input type="number" id="distance" min="1" max="100">
+
+                <label for="mentir_convaincre">Mentir/Convaincre:</label>
+                <input type="number" id="mentir_convaincre" min="1" max="100">
+
+                <label for="intimidation">Intimidation:</label>
+                <input type="number" id="intimidation" min="1" max="100">
+
+                <label for="intelligence">Intelligence:</label>
+                <input type="number" id="intelligence" min="1" max="100">
+
+                <label for="courir_sauter">Courir/Sauter:</label>
+                <input type="number" id="courir_sauter" min="1" max="100">
+
+                <label for="perception">Perception:</label>
+                <input type="number" id="perception" min="1" max="100">
+
+                <label for="reflexe">Réflexe:</label>
+                <input type="number" id="reflexe" min="1" max="100">
+
+                <label for="mental">Mental:</label>
+                <input type="number" id="mental" min="1" max="100">
+            </div>
+        </fieldset>
+
+        <!-- 🔹 Boutons -->
+        <div class="button-container">
+            <button onclick="sauvegarderPersonnage()">Mettre à jour</button>
+            <button onclick="window.location.href='index.html'" class="back-button">Retour</button>
+        </div>
+    </div>
+</body>
+</html>

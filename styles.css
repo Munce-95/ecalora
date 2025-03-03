@@ -1,0 +1,117 @@
+/* 🔹 Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    background-color: #2c3e50;
+    background-image: url("melia_insane.png");
+    background-repeat: no-repeat;
+    background-position: 60%;
+    margin: 0;
+    display: flex;
+    justify-content: flex-start; 
+    align-items: center;
+    padding-left: 5%; 
+}
+
+/* 🔹 Conteneur Principal */
+.container {
+    background: rgba(158, 158, 158, 0.82);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 90%;
+    max-width: 450px;
+}
+
+
+/* 🔹 Titre */
+h2 {
+    color: #34495e;
+    margin-bottom: 20px;
+}
+
+/* 🔹 Champs Input */
+input {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+input:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(52, 152, 219, 0.5);
+}
+
+/* 🔹 Labels */
+label {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* 🔹 Disposition en Grille */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    margin-bottom: 20px;
+}
+
+fieldset {
+    border: 2px solid #bdc3c7;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: left;
+    margin: 20px 0;
+}
+
+legend {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* 🔹 Boutons */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    background-color: #87C757;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #679743;
+}
+
+/* 🔹 Bouton Retour */
+.back-button {
+    background-color: #FCB966;
+}
+
+.back-button:hover {
+    background-color: #d19955;
+}
+
+/* 🔹 Responsive */
+@media (max-width: 500px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .button-container {
+        flex-direction: column;
+    }
+}

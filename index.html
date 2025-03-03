@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <div id="titre">
+            <h2>Écalora the website</h2>
+        </div>
+
+        <p id="welcome-message"></p>
+
+        <div id="case-button">
+            <button onclick="checkCharacterSheet()">Accéder à ma fiche de personnage</button>
+            <button onclick="window.location.href='dice.html'">Lancer des dés</button>
+        </div>
+    </div>
+
+    <button id="logout-button" onclick="logout()">Deconnexion</button>
+
+    <script defer src="index.js"></script>
+</body>
+</html>
