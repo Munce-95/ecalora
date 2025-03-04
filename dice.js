@@ -125,7 +125,7 @@ async function lancerDeNeutre() {
 
     // 🔹 Affichage du résultat dans l'UI
     document.getElementById("resultat").innerHTML = `
-        <h3>Résultat du "<strong>dé 100</strong>" :</h3>
+        <h3>Résultat du "<strong>Dé 100</strong>" :</h3>
         <h2>${resultat}</h2>
     `;
 
