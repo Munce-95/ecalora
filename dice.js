@@ -60,7 +60,7 @@ async function lancerDe(stat) {
     // 🔹 Déterminer l'issue du lancer
     let issue = determinerIssue(resultat, statValeur);
 
-    let statLabel = STAT_LABELS[stat] || stat; // ✅ Remplace le nom si trouvé, sinon garde l'original
+    let statLabel = STAT_LABELS[stat] || stat;
 
     document.getElementById("resultat").innerHTML = `
         <h3>Lancer pour "<strong>${statLabel}</strong>" :</h3>
@@ -100,7 +100,6 @@ async function lancerDegats() {
     document.getElementById("resultat").innerHTML = `
         <h3>Résultat pour "<strong>Dégâts (D${degatType})</strong>" :</h3>
         <h2 class="degats">${resultat} dégâts</h2>
-        <p>Personnage : <strong>${characterName}</strong></p>
     `;
 
     // 🔹 Enregistrer dans l'historique (issue = "Dégâts" pour différencier)
@@ -126,9 +125,8 @@ async function lancerDeNeutre() {
 
     // 🔹 Affichage du résultat dans l'UI
     document.getElementById("resultat").innerHTML = `
-        <h3>Résultat du "<strong>Jet Neutre (d100)</strong>" :</h3>
+        <h3>Résultat du "<strong>dé 100</strong>" :</h3>
         <h2>${resultat}</h2>
-        <p>Personnage : <strong>${characterName}</strong></p>
     `;
 
     // 🔹 Enregistrer dans l'historique (issue = "---" car pas d'issue spécifique)

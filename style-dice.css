@@ -28,12 +28,22 @@ body {
     width: 300px;
 }
 
-#case-bouton-stat, #case-degat, #result-box {
+#case-bouton-stat, #case-degat {
     background: white;
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin-bottom: 20px;
+}
+
+#result-box {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    height: 105px;
     margin-bottom: 20px;
 }
 
@@ -69,8 +79,8 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    max-height: 500px;
-    overflow: scroll;
+    height: 513px;
+    overflow: auto;
 }
 
 #ecalorahisto {
