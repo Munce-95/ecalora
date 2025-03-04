@@ -141,7 +141,7 @@ function determinerIssue(resultat, stat) {
     if (resultat <= stat) return "Réussite";
     if (resultat >= 90 && resultat < 100) return "Échec Critique";
     if (resultat === 100) return "Super Échec Critique";
-    return "Raté";
+    return "Échec";
 }
 
 // 🔹 Fonction pour enregistrer un jet dans Supabase
