@@ -7,12 +7,13 @@
     <link rel="stylesheet" href="style-dice.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Jets de Dés</h2>
-        <p id="welcome-message">Chargement...</p>
-
-        <!-- 🔹 Lancer un dé -->
-        <div class="section">
+    
+    
+        <div id="titre-page">
+            <h2>Jets de Dés</h2>
+        </div>
+    <div id="Colonne-gauche">
+        <div id="case-bouton-stat">
             <h3>Choisissez une statistique :</h3>
             <div class="buttons-grid">
                 <button onclick="lancerDe('corps_a_corps')">Corps à Corps</button>
@@ -27,30 +28,27 @@
                 <button class="neutral" onclick="lancerDeNeutre()">Jet Neutre (d100)</button>
             </div>
         </div>
-        
+
         <div id="case-degat">
             <label for="degatsInput">Type de dé pour les dégâts :</label>
             <input type="number" id="degatsInput" placeholder="ex: 6, 8, 10..." min="2">
             <button onclick="lancerDegats()">Lancer les dégâts</button>
         </div>
 
-        <!-- 🔹 Résultat du lancer -->
-        <div class="section result-box">
+        <div id="result-box">
             <h3>Résultat :</h3>
             <div id="resultat">Aucun jet effectué.</div>
         </div>
+    </div>
 
-        <!-- 🔹 Historique des jets -->
-        <div class="section">
-            <h3>Historique des Jets :</h3>
-            <button class="delete-btn" onclick="resetHistorique()">🗑️ Supprimer l'historique</button>
-            <ul id="ecalorahisto"></ul>
-        </div>
+    <div id="Colonne-droite">
+        <h3>Historique des Jets :</h3>
+        <button class="delete-btn" onclick="resetHistorique()">Supprimer l'historique</button>
+        <ul id="ecalorahisto"></ul>
+    </div>
 
-        <!-- 🔹 Retour Accueil -->
-        <div class="section">
-            <button class="return-btn" onclick="window.location.href='index.html'">🏠 Retour à l'Accueil</button>
-        </div>
+    <div id="bouton-retour">
+        <button class="return-btn" onclick="window.location.href='index.html'">🏠 Retour à l'Accueil</button>
     </div>
 
     <script defer src="dice.js"></script>

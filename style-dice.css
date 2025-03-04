@@ -1,165 +1,102 @@
-/* 🔹 Styles globaux */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #2c3e50;
-    color: white;
+/* Reset de base */
+* {
     margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-/* 🔹 Conteneur principal (2 colonnes) */
-.container {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* ✅ Colonne gauche + large que la droite */
-    gap: 20px;
-    width: 80%;
-    max-width: 1000px;
-    background: rgba(255, 255, 255, 0.1);
+body {
+    background-color: #2c3e50;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    background-image: url("merelaugh.png");
+    background-repeat: no-repeat;
+    background-position: center top -18%;
 }
 
-/* 🔹 Colonne Gauche : Dés + Résultat */
-.left-column {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* Titre de la page */
+#titre-page {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-/* 🔹 Colonne Droite : Historique */
-.right-column {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+/* Colonne gauche */
+#Colonne-gauche {
+    position: absolute;
+    left: 10%;
+    top: 15%;
+    width: 300px;
 }
 
-/* 🔹 Sections */
-.section {
-    background: rgba(255, 255, 255, 0.2);
+#case-bouton-stat, #case-degat, #result-box {
+    background: white;
     padding: 15px;
     border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    margin-bottom: 20px;
 }
 
-/* 🔹 Grille de boutons pour les jets */
 .buttons-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
 
 button {
     padding: 10px;
     border: none;
-    background-color: #3498db;
+    background-color: #1A4D3C;
     color: white;
-    font-size: 16px;
-    border-radius: 6px;
     cursor: pointer;
-    transition: 0.3s ease;
+    border-radius: 5px;
+    transition: background 0.3s ease;
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #113126;
 }
 
-/* 🔹 Bouton neutre */
-.neutral {
-    background-color: #8e44ad;
-}
 
-.neutral:hover {
-    background-color: #6c3483;
-}
-
-/* 🔹 Nouvelle case Dé de Dégâts */
-#case-degat {
-    background: rgba(255, 255, 255, 0.2);
+/* Colonne droite */
+#Colonne-droite {
+    position: absolute;
+    right: 10%;
+    top: 15%;
+    width: 300px;
+    background: white;
     padding: 15px;
     border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    max-height: 500px;
+    overflow: scroll;
 }
 
-#case-degat label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    display: block;
-}
-
-#case-degat input {
-    width: 80px;
-    padding: 8px;
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-/* 🔹 Résultat */
-.result-box {
-    font-size: 20px;
-    font-weight: bold;
-    padding: 15px;
-    text-align: center;
-    background: rgba(46, 204, 113, 0.3);
-}
-
-/* 🔹 Historique des jets */
 #ecalorahisto {
     list-style: none;
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
+    margin-top: 10px;
 }
 
-#ecalorahisto li {
-    padding: 8px;
-    margin: 5px 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
-    text-align: center;
-}
-
-/* 🔹 Bouton de suppression historique */
 .delete-btn {
-    background-color: #e74c3c;
+    background-color: #FDA5A5;
 }
 
 .delete-btn:hover {
-    background-color: #c0392b;
+    background-color: #c38080;
 }
 
-/* 🔹 Bouton Retour (en bas à gauche) */
+/* Position du bouton retour */
+#bouton-retour {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
 .return-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background-color: #7f8c8d;
+    background-color: #4D2400;
 }
 
 .return-btn:hover {
-    background-color: #5d6d7e;
-}
-
-/* 🔹 Responsive */
-@media (max-width: 800px) {
-    .container {
-        grid-template-columns: 1fr; /* ✅ Passe en colonne unique sur petits écrans */
-        width: 90%;
-    }
-
-    .return-btn {
-        position: static;
-        width: 100%;
-        margin-top: 15px;
-    }
+    background-color: #271200;
 }
