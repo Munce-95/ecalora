@@ -30,8 +30,8 @@ const STAT_LABELS = {
     "perception": "Perception",
     "reflexe": "Réflexe",
     "mental": "Mental",
-    "internet": "Internet",
     "Dé Neutre": "Dé 100",
+    "internet": "Internet",
     "Dégâts": "Dégâts"
 };
 
