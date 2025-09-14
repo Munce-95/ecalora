@@ -50,7 +50,8 @@ body {
 .buttons-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 6px;
+    padding: 6px;
 }
 
 button {
@@ -66,7 +67,6 @@ button {
 button:hover {
     background-color: #113126;
 }
-
 
 /* Colonne droite */
 #Colonne-droite {
