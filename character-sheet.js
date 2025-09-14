@@ -43,6 +43,7 @@ async function chargerFichePersonnage() {
         document.getElementById("perception").value = personnage.perception ?? 50;
         document.getElementById("reflexe").value = personnage.reflexe ?? 50;
         document.getElementById("mental").value = personnage.mental ?? 50;
+        document.getElementById("internet").value = personnage.internet ?? 50;
 
     } catch (error) {
         console.error("❌ Erreur lors du chargement de la fiche :", error);
@@ -63,7 +64,8 @@ async function sauvegarderPersonnage() {
         courir_sauter: parseInt(document.getElementById("courir_sauter").value),
         perception: parseInt(document.getElementById("perception").value),
         reflexe: parseInt(document.getElementById("reflexe").value),
-        mental: parseInt(document.getElementById("mental").value)
+        mental: parseInt(document.getElementById("mental").value),
+        internet: parseInt(document.getElementById("internet").value)
     };
 
     try {
