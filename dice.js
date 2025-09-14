@@ -130,7 +130,7 @@ async function lancerDeNeutre() {
     `;
 
     // 🔹 Enregistrer dans l'historique (issue = "---" car pas d'issue spécifique)
-    await enregistrerHistorique(user.id, characterName, "Jet d'Internet", resultat, "");
+    await enregistrerHistorique(user.id, characterName, "Jet Neutre (d100)", resultat, "");
 }
 
 
@@ -226,6 +226,6 @@ async function resetHistorique() {
     }
 }
 
-// 🔹 Rafraîchir l'historique toutes les 5 secondes
+// 🔹 Rafraîchir l'historique toutes les secondes
 setInterval(chargerHistorique, 1000);
 document.addEventListener("DOMContentLoaded", chargerHistorique);
