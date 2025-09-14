@@ -130,7 +130,7 @@ async function lancerDeNeutre() {
     `;
 
     // 🔹 Enregistrer dans l'historique (issue = "---" car pas d'issue spécifique)
-    await enregistrerHistorique(user.id, characterName, "Jet Neutre (d100)", resultat, "");
+    await enregistrerHistorique(user.id, characterName, "Jet d'Internet", resultat, "");
 }
 
 
