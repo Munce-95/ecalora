@@ -127,7 +127,8 @@ document.addEventListener("DOMContentLoaded", initMJInterface);
 
 
 function ajouterBonusMalus() {
-    const playerId = document.getElementById("player-select").value;
+    const playerSelect = document.getElementById("player-select");
+    const playerId = playerSelect.value;          // ID du personnage ciblé
     const stat = document.getElementById("stat-select").value;
     const value = parseInt(document.getElementById("bonus-value").value, 10);
 
@@ -136,11 +137,34 @@ function ajouterBonusMalus() {
         return;
     }
 
-    // Créer l'objet si nécessaire
     if (!temporaryModifiers[playerId]) temporaryModifiers[playerId] = {};
     temporaryModifiers[playerId][stat] = value;
 
-    alert(`Bonus/Malus de ${value} appliqué au prochain jet de ce joueur (${stat}) !`);
+    alert(`Bonus/Malus de ${value} appliqué au prochain jet de ce personnage (${stat}) !`);
+}
+
+async function chargerMJPlayers() {
+    // 🔹 Récupérer tous les personnages
+    let response = await fetch(`${API_PERSONNAGES}?select=id,nom&order=nom.asc`, {
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
+    });
+    let data = await response.json();
+
+    let select = document.getElementById("player-select");
+    select.innerHTML = "";
+
+    data.forEach(p => {
+        let option = document.createElement("option");
+        option.value = p.id;       // ID du personnage
+        option.textContent = p.nom;
+        select.appendChild(option);
+    });
+}
+
+// 🔹 Afficher le panneau MJ uniquement pour Zevra
+if (user.pseudo === "Zevra") {
+    document.getElementById("bonus-malus-container").style.display = "block";
+    chargerMJPlayers();
 }
 
 
@@ -150,30 +174,34 @@ function ajouterBonusMalus() {
 async function lancerDe(stat) {
     let resultat = random_roll();
 
-    // 🔹 Récupérer la fiche du personnage
-    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=nom,${stat}`, {
+    // 🔹 Récupérer le personnage du compte connecté
+    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom,${stat}`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     let data = await response.json();
 
-    let characterName = "Inconnu";
-    let statValeur = 50;
+    let characterId, characterName, statValeur;
     if (Array.isArray(data) && data.length > 0) {
-        characterName = data[0].nom;
-        statValeur = data[0][stat];
+        characterId = data[0].id;       // ID du personnage
+        characterName = data[0].nom;    // Nom du personnage
+        statValeur = data[0][stat];     // Statistique
+    } else {
+        characterId = null;
+        characterName = "Inconnu";
+        statValeur = 50;
     }
 
-    // 🔹 BONUS/MALUS : appliquer sur la stat
-    let bonus = temporaryModifiers[user.id]?.[stat] || 0;
+    // 🔹 Appliquer le bonus/malus si présent pour ce personnage et cette stat
+    let bonus = temporaryModifiers[characterId]?.[stat] || 0;
     let statEffective = statValeur + bonus;
 
     // 🔹 Supprimer le bonus après utilisation
-    if (temporaryModifiers[user.id]?.[stat]) delete temporaryModifiers[user.id][stat];
+    if (temporaryModifiers[characterId]?.[stat]) delete temporaryModifiers[characterId][stat];
 
-    // 🔹 Déterminer l'issue en comparant au statEffective
+    // 🔹 Déterminer l'issue du jet
     let issue = determinerIssue(resultat, statEffective);
 
-    console.log(`🎲 ${user.pseudo} (${stat}) → ${resultat} vs ${statValeur} (bonus ${bonus}) → ${issue}`);
+    console.log(`🎲 ${user.pseudo} (${characterName} - ${stat}) → ${resultat} vs ${statValeur} (+bonus ${bonus}) → ${issue}`);
 
     document.getElementById("resultat").innerHTML = `
         <h3>Lancer pour "<strong>${STAT_LABELS[stat] || stat}</strong>" :</h3>
@@ -182,6 +210,7 @@ async function lancerDe(stat) {
 
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 }
+
 
 
 
