@@ -152,13 +152,12 @@ async function lancerDe(stat) {
 
     const issue = determinerIssue(resultat, statValeur);
 
-    // ✅ Affichage dans l'UI
     document.getElementById("resultat").innerHTML = `
         <h3>Lancer pour "<strong>${STAT_LABELS[stat] || stat}</strong>" :</h3>
         <h2>${resultat} - ${issue}</h2>
     `;
 
-    // 📊 Console fun
+    // Console fun ✅
     console.log(`🎲 Lancer de dé :
 👤 ID compte : ${user.id}
 🧙 Personnage : ${characterName}
@@ -168,6 +167,7 @@ async function lancerDe(stat) {
 
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 }
+
 
 
 async function lancerDegats() {
