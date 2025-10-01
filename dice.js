@@ -126,7 +126,6 @@ async function initMJInterface() {
 document.addEventListener("DOMContentLoaded", initMJInterface);
 
 
-// Fonction pour le bonus/malus
 function ajouterBonusMalus() {
     const playerId = document.getElementById("player-select").value;
     const stat = document.getElementById("stat-select").value;
@@ -137,11 +136,13 @@ function ajouterBonusMalus() {
         return;
     }
 
+    // Créer l'objet si nécessaire
     if (!temporaryModifiers[playerId]) temporaryModifiers[playerId] = {};
     temporaryModifiers[playerId][stat] = value;
 
     alert(`Bonus/Malus de ${value} appliqué au prochain jet de ce joueur (${stat}) !`);
 }
+
 
 
 
@@ -151,47 +152,37 @@ async function lancerDe(stat) {
 
     // 🔹 Récupérer la fiche du personnage
     let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=nom,${stat}`, {
-        method: "GET",
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     let data = await response.json();
 
     let characterName = "Inconnu";
     let statValeur = 50;
-
     if (Array.isArray(data) && data.length > 0) {
         characterName = data[0].nom;
         statValeur = data[0][stat];
     }
 
-    // 🔹 Ajouter le bonus/malus temporaire si présent
-    let bonus = 0;
-    if (temporaryModifiers[user.id] && temporaryModifiers[user.id][stat]) {
-        bonus = temporaryModifiers[user.id][stat];
-    }
+    // 🔹 BONUS/MALUS : appliquer sur la stat
+    let bonus = temporaryModifiers[user.id]?.[stat] || 0;
+    let statEffective = statValeur + bonus;
 
-    let resultatFinal = resultat + bonus;
+    // 🔹 Supprimer le bonus après utilisation
+    if (temporaryModifiers[user.id]?.[stat]) delete temporaryModifiers[user.id][stat];
 
-    // 🔹 Déterminer l'issue AVANT de supprimer le bonus
-    let issue = determinerIssue(resultatFinal, statValeur);
+    // 🔹 Déterminer l'issue en comparant au statEffective
+    let issue = determinerIssue(resultat, statEffective);
 
-    console.log(`🎲 ${user.pseudo} (${stat}) → ${resultatFinal} (bonus/malus ${bonus >= 0 ? "+" : ""}${bonus})`);
-
-    // 🔹 Supprimer le bonus/malus après utilisation
-    if (temporaryModifiers[user.id] && temporaryModifiers[user.id][stat]) {
-        delete temporaryModifiers[user.id][stat];
-    }
-
-    let statLabel = STAT_LABELS[stat] || stat;
+    console.log(`🎲 ${user.pseudo} (${stat}) → ${resultat} vs ${statValeur} (bonus ${bonus}) → ${issue}`);
 
     document.getElementById("resultat").innerHTML = `
-        <h3>Lancer pour "<strong>${statLabel}</strong>" :</h3>
-        <h2>${resultatFinal} - ${issue}</h2>
+        <h3>Lancer pour "<strong>${STAT_LABELS[stat] || stat}</strong>" :</h3>
+        <h2>${resultat} - ${issue}</h2>
     `;
 
-    // 🔹 Enregistrer le jet dans l'historique
-    await enregistrerHistorique(user.id, characterName, stat, resultatFinal, issue);
+    await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 }
+
 
 
 
