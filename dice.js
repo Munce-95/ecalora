@@ -39,7 +39,11 @@ const STAT_LABELS = {
 let previousPlayers = [];
 
 // 🔹 Bonus/Malus temporaires par ID de personnage
-let temporaryModifiers = {};
+let temporaryModifiers = {
+    "6072d1ef-735c-4765-a80d-9ddd68d82015": {}, // Hatori
+    "a7e398e1-a158-4f8c-adb8-1a14b73b11ed": {}, // Jean
+    "d40c95be-4067-4dad-a27d-05176658a550": {}  // Noelle
+};
 
 // 🔹 Fonction pour afficher les Points de Vie des joueurs
 async function afficherHealth() {
@@ -108,11 +112,11 @@ async function lancerDe(stat) {
         statValeur = 50;
     }
 
-    // 🔹 Appliquer bonus/malus sur la stat
+    // 🔹 Appliquer bonus/malus si présent
     let bonus = temporaryModifiers[characterId]?.[stat] || 0;
     let statEffective = statValeur + bonus;
 
-    // 🔹 Supprimer le bonus après utilisation
+    // 🔹 Supprimer le bonus après usage
     if (temporaryModifiers[characterId]?.[stat]) delete temporaryModifiers[characterId][stat];
 
     let issue = determinerIssue(resultat, statEffective);
@@ -139,7 +143,7 @@ async function lancerDegats() {
 
     let resultat = Math.floor(Math.random() * degatType) + 1;
 
-    let response = await fetch(`${SUPABASE_URL}/rest/v1/characters?user_id=eq.${user.id}&select=id,nom`, {
+    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     let data = await response.json();
@@ -158,7 +162,7 @@ async function lancerDegats() {
 async function lancerDeNeutre() {
     let resultat = random_roll();
 
-    let response = await fetch(`${SUPABASE_URL}/rest/v1/characters?user_id=eq.${user.id}&select=id,nom`, {
+    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     let data = await response.json();
@@ -172,8 +176,7 @@ async function lancerDeNeutre() {
     await enregistrerHistorique(user.id, characterName, "Jet Neutre (d100)", resultat, "");
 }
 
-
-// 🔹 Fonction pour déterminer l'issue d'un jet
+// 🔹 Déterminer l'issue du jet
 function determinerIssue(resultat, stat) {
     if (resultat === 1) return "Super Réussite Critique";
     if (resultat <= 10) return "Réussite Critique";
@@ -183,65 +186,50 @@ function determinerIssue(resultat, stat) {
     return "Échec";
 }
 
-// 🔹 Fonction pour enregistrer un jet dans Supabase
+// 🔹 Enregistrer un jet dans Supabase
 async function enregistrerHistorique(userId, characterName, stat, resultat, issue) {
-    let jetData = {
-        user_id: userId,
-        character_name: characterName,
-        stat: stat,
-        result: resultat,
-        issue: issue
-    };
-
-    console.log("📤 Données envoyées à Supabase :", JSON.stringify(jetData, null, 2));
+    let jetData = { user_id: userId, character_name: characterName, stat, result: resultat, issue };
 
     try {
-        let response = await fetch(`${SUPABASE_URL}/rest/v1/ecalorahisto`, {
+        await fetch(`${API_HISTORIQUE}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "apikey": SUPABASE_KEY,
-                "Authorization":`Bearer ${SUPABASE_KEY}`
+                "Authorization": `Bearer ${SUPABASE_KEY}`
             },
             body: JSON.stringify(jetData)
         });
-
-        console.log("✅ Jet ajouté avec succès !");
         chargerHistorique();
     } catch (error) {
         console.error("❌ Erreur lors de l'enregistrement :", error);
     }
 }
 
-
-// 🔹 Fonction pour charger l’historique
+// 🔹 Charger l’historique
 async function chargerHistorique() {
     let historiqueContainer = document.getElementById("ecalorahisto");
     if (!historiqueContainer) return;
 
     try {
         let response = await fetch(`${API_HISTORIQUE}?order=created_at.desc&limit=10`, {
-            method: "GET",
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
-
-        if (!response.ok) return;
-
         let data = await response.json();
         afficherHistorique(data);
     } catch (error) {
+        console.error("❌ Erreur chargement historique :", error);
     }
 }
 
-// 🔹 Fonction pour afficher l’historique des jets
+// 🔹 Afficher l’historique
 function afficherHistorique(jets) {
     let historiqueContainer = document.getElementById("ecalorahisto");
     if (!historiqueContainer) return;
 
     historiqueContainer.innerHTML = "";
     jets.forEach(jet => {
-        let statLabel = STAT_LABELS[jet.stat] || jet.stat; // ✅ Remplace le nom technique
-
+        let statLabel = STAT_LABELS[jet.stat] || jet.stat;
         let li = document.createElement("li");
         li.innerHTML = `<strong>${jet.character_name}</strong> <br>
                         <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}
@@ -250,22 +238,44 @@ function afficherHistorique(jets) {
     });
 }
 
-
 // 🔹 Supprimer l’historique
 async function resetHistorique() {
     try {
-        let response = await fetch(`${API_HISTORIQUE}?created_at=not.is.null`, {
+        await fetch(`${API_HISTORIQUE}?created_at=not.is.null`, {
             method: "DELETE",
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
-
-        console.log("✅ Historique ENTIER supprimé !");
         chargerHistorique();
     } catch (error) {
         console.error("❌ Erreur suppression historique :", error);
     }
 }
 
-// 🔹 Rafraîchir l'historique toutes les secondes
-setInterval(chargerHistorique, 1000);
-document.addEventListener("DOMContentLoaded", chargerHistorique);
+// 🔹 Fonction MJ pour appliquer un bonus/malus
+function ajouterBonusMalus() {
+    const playerId = document.getElementById("player-select").value;
+    const stat = document.getElementById("stat-select").value;
+    const value = parseInt(document.getElementById("bonus-value").value, 10);
+
+    if (!playerId || isNaN(value)) {
+        alert("Veuillez sélectionner un personnage et entrer une valeur valide.");
+        return;
+    }
+
+    temporaryModifiers[playerId][stat] = value;
+    alert(`Bonus/Malus de ${value} appliqué sur ${stat} pour le personnage choisi !`);
+}
+
+// 🔹 Initialisation
+document.addEventListener("DOMContentLoaded", () => {
+    afficherHealth();
+    chargerHistorique();
+
+    setInterval(afficherHealth, 1000);
+    setInterval(chargerHistorique, 1000);
+
+    // Afficher bonus/malus uniquement si MJ
+    if (user.pseudo === "Zevra") {
+        document.getElementById("bonus-malus-container").style.display = "block";
+    }
+});
