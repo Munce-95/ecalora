@@ -6,11 +6,9 @@ const API_PERSONNAGES = `${SUPABASE_URL}/rest/v1/characters`;
 
 // 🔹 Récupération de l'utilisateur connecté
 const user = JSON.parse(sessionStorage.getItem("user"));
-if (!user) {
-    window.location.href = "auth.html";
-}
+if (!user) window.location.href = "auth.html";
 
-// 🔹 Génération d’un dé 100 (Méthode sécurisée)
+// 🔹 Dé sécurisé
 function random_roll() {
     const randomArray = new Uint32Array(1);
     crypto.getRandomValues(randomArray);
@@ -38,90 +36,66 @@ const STAT_LABELS = {
 // 🔹 Historique PV
 let previousPlayers = [];
 
-// 🔹 Bonus/Malus temporaires par ID de personnage
+// 🔹 Temporary modifiers par ID
 let temporaryModifiers = {
     "6072d1ef-735c-4765-a80d-9ddd68d82015": {}, // Hatori
     "a7e398e1-a158-4f8c-adb8-1a14b73b11ed": {}, // Jean
     "d40c95be-4067-4dad-a27d-05176658a550": {}  // Noelle
 };
 
-// 🔹 Fonction pour afficher les Points de Vie des joueurs
+// 🔹 Affichage des PV
 async function afficherHealth() {
-    const healthContainer = document.getElementById("health-container");
-    if (!healthContainer) return;
+    const container = document.getElementById("health-container");
+    if (!container) return;
 
     try {
-        let response = await fetch(`${API_PERSONNAGES}?select=id,nom,pdv,max_pdv&order=nom.asc`, {
-            method: "GET",
+        const response = await fetch(`${API_PERSONNAGES}?select=id,nom,pdv,max_pdv&order=nom.asc`, {
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
-
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        let players = await response.json();
+        const players = await response.json();
 
         let hasChanged = players.some((p, i) => !previousPlayers[i] || previousPlayers[i].pdv !== p.pdv);
         if (!hasChanged) return;
 
         previousPlayers = players.map(p => ({ id: p.id, pdv: p.pdv }));
-        healthContainer.innerHTML = "<h3>Points de Vie des joueurs :</h3>";
+        container.innerHTML = "<h3>Points de Vie des joueurs :</h3>";
 
-        players.forEach(player => {
-            const playerDiv = document.createElement("div");
-            playerDiv.className = "player-health";
-
-            const text = document.createElement("p");
-            text.textContent = `${player.nom} : ${player.pdv} / ${player.max_pdv}`;
-            playerDiv.appendChild(text);
-
-            const barContainer = document.createElement("div");
-            barContainer.className = "health-bar-container";
-
-            const bar = document.createElement("div");
-            bar.className = "health-bar";
-            bar.style.width = (player.pdv / player.max_pdv * 100) + "%";
-
-            barContainer.appendChild(bar);
-            playerDiv.appendChild(barContainer);
-
-            healthContainer.appendChild(playerDiv);
+        players.forEach(p => {
+            const div = document.createElement("div");
+            div.className = "player-health";
+            div.innerHTML = `<p>${p.nom} : ${p.pdv} / ${p.max_pdv}</p>
+                             <div class="health-bar-container">
+                                <div class="health-bar" style="width:${(p.pdv/p.max_pdv*100)}%"></div>
+                             </div>`;
+            container.appendChild(div);
         });
-
-    } catch (error) {
-        console.warn("⚠️ Impossible de récupérer les PV :", error);
+    } catch (err) {
+        console.warn("⚠️ Impossible de récupérer les PV :", err);
     }
 }
 
-// 🔹 Lancer un dé sur une statistique
+// 🔹 Lancer un dé sur une stat
 async function lancerDe(stat) {
-    let resultat = random_roll();
+    const resultat = random_roll();
 
-    // 🔹 Récupérer le personnage actif (même si c'est un joueur normal)
-    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom,${stat}`, {
+    // 🔹 Récupérer personnage du compte
+    const resp = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom,${stat}`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
-    let data = await response.json();
+    const data = await resp.json();
 
-    // 🔹 Vérifier que le personnage existe
-    let characterId, characterName, statValeur;
-    if (Array.isArray(data) && data.length > 0) {
-        characterId = data[0].id;
-        characterName = data[0].nom;
-        statValeur = data[0][stat];
-    } else {
-        characterId = null;
-        characterName = "Inconnu";
-        statValeur = 50;
-    }
+    if (!Array.isArray(data) || data.length === 0) return alert("Aucun personnage trouvé !");
+    const { id: characterId, nom: characterName } = data[0];
+    let statValeur = data[0][stat];
 
-    // 🔹 Appliquer bonus/malus uniquement si le MJ a défini un bonus pour ce personnage
-    let bonus = temporaryModifiers[characterId]?.[stat] || 0;
-    let statEffective = statValeur + bonus;
+    // 🔹 Appliquer bonus/malus temporaire
+    const bonus = temporaryModifiers[characterId]?.[stat] || 0;
+    const statEffective = statValeur + bonus;
 
-    // 🔹 Supprimer le bonus/malus après utilisation
     if (bonus !== 0) delete temporaryModifiers[characterId][stat];
 
-    // 🔹 Déterminer l'issue avec la stat modifiée
-    let issue = determinerIssue(resultat, statEffective);
+    const issue = determinerIssue(resultat, statEffective);
 
     console.log(`🎲 ${user.pseudo} (${characterName} - ${stat}) → ${resultat} vs ${statValeur} (+bonus ${bonus}) → ${issue}`);
 
@@ -133,53 +107,19 @@ async function lancerDe(stat) {
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 }
 
+// 🔹 Fonction MJ pour ajouter un bonus/malus
+function ajouterBonusMalus() {
+    const playerId = document.getElementById("player-select").value;
+    const stat = document.getElementById("stat-select").value;
+    const value = parseInt(document.getElementById("bonus-value").value, 10);
 
-// 🔹 Lancer un dé pour les dégâts
-async function lancerDegats() {
-    let degatInput = document.getElementById("degatsInput").value;
-    let degatType = parseInt(degatInput, 10);
+    if (!playerId || isNaN(value)) return alert("Sélectionner un personnage et une valeur valide.");
 
-    if (isNaN(degatType) || degatType < 2) {
-        alert("Veuillez entrer un type de dé valide (ex: 6, 8, 10...).");
-        return;
-    }
-
-    let resultat = Math.floor(Math.random() * degatType) + 1;
-
-    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
-        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
-    });
-    let data = await response.json();
-    let characterId = (Array.isArray(data) && data.length > 0) ? data[0].id : null;
-    let characterName = (Array.isArray(data) && data.length > 0) ? data[0].nom : "Inconnu";
-
-    document.getElementById("resultat").innerHTML = `
-        <h3>Résultat pour "<strong>Dégâts (D${degatType})</strong>" :</h3>
-        <h2 class="degats">${resultat} dégâts</h2>
-    `;
-
-    await enregistrerHistorique(user.id, characterName, `Dégâts (D${degatType})`, resultat, "Dégâts");
+    temporaryModifiers[playerId][stat] = value;
+    alert(`Bonus/Malus de ${value} appliqué sur ${stat} pour le personnage choisi !`);
 }
 
-// 🔹 Lancer un dé neutre (d100)
-async function lancerDeNeutre() {
-    let resultat = random_roll();
-
-    let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
-        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
-    });
-    let data = await response.json();
-    let characterName = (Array.isArray(data) && data.length > 0) ? data[0].nom : "Inconnu";
-
-    document.getElementById("resultat").innerHTML = `
-        <h3>Résultat du "<strong>Dé 100</strong>" :</h3>
-        <h2>${resultat}</h2>
-    `;
-
-    await enregistrerHistorique(user.id, characterName, "Jet Neutre (d100)", resultat, "");
-}
-
-// 🔹 Déterminer l'issue du jet
+// 🔹 Déterminer l'issue
 function determinerIssue(resultat, stat) {
     if (resultat === 1) return "Super Réussite Critique";
     if (resultat <= 10) return "Réussite Critique";
@@ -189,55 +129,32 @@ function determinerIssue(resultat, stat) {
     return "Échec";
 }
 
-// 🔹 Enregistrer un jet dans Supabase
-async function enregistrerHistorique(userId, characterName, stat, resultat, issue) {
-    let jetData = { user_id: userId, character_name: characterName, stat, result: resultat, issue };
-
-    try {
-        await fetch(`${API_HISTORIQUE}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify(jetData)
-        });
-        chargerHistorique();
-    } catch (error) {
-        console.error("❌ Erreur lors de l'enregistrement :", error);
-    }
-}
-
-// 🔹 Charger l’historique
+// 🔹 Historique
 async function chargerHistorique() {
-    let historiqueContainer = document.getElementById("ecalorahisto");
-    if (!historiqueContainer) return;
+    const container = document.getElementById("ecalorahisto");
+    if (!container) return;
 
     try {
-        let response = await fetch(`${API_HISTORIQUE}?order=created_at.desc&limit=10`, {
+        const resp = await fetch(`${API_HISTORIQUE}?order=created_at.desc&limit=10`, {
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
-        let data = await response.json();
+        const data = await resp.json();
         afficherHistorique(data);
-    } catch (error) {
-        console.error("❌ Erreur chargement historique :", error);
+    } catch (err) {
+        console.error("❌ Erreur chargement historique :", err);
     }
 }
 
-// 🔹 Afficher l’historique
 function afficherHistorique(jets) {
-    let historiqueContainer = document.getElementById("ecalorahisto");
-    if (!historiqueContainer) return;
-
-    historiqueContainer.innerHTML = "";
+    const container = document.getElementById("ecalorahisto");
+    if (!container) return;
+    container.innerHTML = "";
     jets.forEach(jet => {
         let statLabel = STAT_LABELS[jet.stat] || jet.stat;
-        let li = document.createElement("li");
+        const li = document.createElement("li");
         li.innerHTML = `<strong>${jet.character_name}</strong> <br>
-                        <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}
-                        <br>----------------------`;
-        historiqueContainer.appendChild(li);
+                        <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}<br>----------------------`;
+        container.appendChild(li);
     });
 }
 
@@ -249,24 +166,9 @@ async function resetHistorique() {
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
         chargerHistorique();
-    } catch (error) {
-        console.error("❌ Erreur suppression historique :", error);
+    } catch (err) {
+        console.error("❌ Erreur suppression historique :", err);
     }
-}
-
-// 🔹 Fonction MJ pour appliquer un bonus/malus
-function ajouterBonusMalus() {
-    const playerId = document.getElementById("player-select").value;
-    const stat = document.getElementById("stat-select").value;
-    const value = parseInt(document.getElementById("bonus-value").value, 10);
-
-    if (!playerId || isNaN(value)) {
-        alert("Veuillez sélectionner un personnage et entrer une valeur valide.");
-        return;
-    }
-
-    temporaryModifiers[playerId][stat] = value;
-    alert(`Bonus/Malus de ${value} appliqué sur ${stat} pour le personnage choisi !`);
 }
 
 // 🔹 Initialisation
@@ -277,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(afficherHealth, 1000);
     setInterval(chargerHistorique, 1000);
 
-    // Afficher bonus/malus uniquement si MJ
     if (user.pseudo === "Zevra") {
         document.getElementById("bonus-malus-container").style.display = "block";
     }
