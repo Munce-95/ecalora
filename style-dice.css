@@ -110,3 +110,96 @@ button:hover {
 .return-btn:hover {
     background-color: #271200;
 }
+
+/* 🔹 Zone centrale pour MJ + PV */
+#zone-centrale {
+    position: fixed; /* rester au centre de l'écran même en scroll */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* espace entre bonus/malus et PV */
+}
+
+/* 🔹 Bonus/Malus MJ */
+#bonus-malus-container {
+    width: 300px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    display: none; /* affiché uniquement pour le MJ via JS */
+}
+
+#bonus-malus-container h3 {
+    margin-bottom: 10px;
+}
+
+#bonus-malus-container label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#bonus-malus-container select,
+#bonus-malus-container input {
+    width: 90%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#bonus-malus-container button {
+    margin-top: 12px;
+    padding: 10px;
+    width: 50%;
+    border: none;
+    border-radius: 5px;
+    background-color: #1A4D3C;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#bonus-malus-container button:hover {
+    background-color: #113126;
+}
+
+/* 🔹 Health container (barres de vie) */
+#health-container {
+    width: 300px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    background: white;
+    opacity: 82%;
+}
+
+/* 🔹 Styles internes des barres de vie */
+.player-health {
+    margin-bottom: 12px;
+}
+
+.player-health p {
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.health-bar-container {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #000;
+    background: #eee;
+    border-radius: 5px;
+}
+
+.health-bar {
+    height: 100%;
+    background: red;
+    transition: width 0.5s ease;
+}
