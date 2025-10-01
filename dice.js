@@ -95,12 +95,13 @@ async function afficherHealth() {
 async function lancerDe(stat) {
     let resultat = random_roll();
 
-    // 🔹 Récupérer le personnage du compte qui lance le dé
+    // 🔹 Récupérer le personnage actif (même si c'est un joueur normal)
     let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom,${stat}`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     let data = await response.json();
 
+    // 🔹 Vérifier que le personnage existe
     let characterId, characterName, statValeur;
     if (Array.isArray(data) && data.length > 0) {
         characterId = data[0].id;
@@ -112,13 +113,14 @@ async function lancerDe(stat) {
         statValeur = 50;
     }
 
-    // 🔹 Appliquer bonus/malus si présent
+    // 🔹 Appliquer bonus/malus uniquement si le MJ a défini un bonus pour ce personnage
     let bonus = temporaryModifiers[characterId]?.[stat] || 0;
     let statEffective = statValeur + bonus;
 
-    // 🔹 Supprimer le bonus après usage
-    if (temporaryModifiers[characterId]?.[stat]) delete temporaryModifiers[characterId][stat];
+    // 🔹 Supprimer le bonus/malus après utilisation
+    if (bonus !== 0) delete temporaryModifiers[characterId][stat];
 
+    // 🔹 Déterminer l'issue avec la stat modifiée
     let issue = determinerIssue(resultat, statEffective);
 
     console.log(`🎲 ${user.pseudo} (${characterName} - ${stat}) → ${resultat} vs ${statValeur} (+bonus ${bonus}) → ${issue}`);
@@ -130,6 +132,7 @@ async function lancerDe(stat) {
 
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 }
+
 
 // 🔹 Lancer un dé pour les dégâts
 async function lancerDegats() {
