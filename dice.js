@@ -173,37 +173,78 @@ async function resetHistorique() {
     }
 }
 
+
+// =======================
+// BONUS/MALUS MJ
+// =======================
+async function appliquerBonusMalus(characterId, valeur) {
+    await fetch(`${API_PERSONNAGES}?id=eq.${characterId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({ modifier_temporaire: valeur })
+    });
+    console.log(`⚡ Bonus/Malus appliqué : ${valeur} à ${characterId}`);
+}
+
 // =======================
 // LANCER DES DÉS
 // =======================
-
 async function lancerDe(stat) {
     const resultat = random_roll();
 
-    const response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=nom,${stat}`, {
+    // 🔹 Récupérer le personnage actuel avec la stat et le bonus/malus temporaire
+    const response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom,${stat},modifier_temporaire`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     const data = await response.json();
 
-    const characterName = (Array.isArray(data) && data.length > 0) ? data[0].nom : "Inconnu";
-    const statValeur = (Array.isArray(data) && data.length > 0) ? data[0][stat] : 50;
+    if (!Array.isArray(data) || data.length === 0) {
+        alert("⚠️ Aucun personnage trouvé !");
+        return;
+    }
 
+    const perso = data[0];
+    const characterName = perso.nom; // pour affichage console et historique
+    const baseStat = perso[stat] || 0;
+    const bonus = perso.modifier_temporaire || 0;
+
+    const statValeur = baseStat + bonus;
     const issue = determinerIssue(resultat, statValeur);
 
+    // 🔹 Affichage du résultat
     document.getElementById("resultat").innerHTML = `
         <h3>Lancer pour "<strong>${STAT_LABELS[stat] || stat}</strong>" :</h3>
-        <h2>${resultat} - ${issue}</h2>
+        <h2>${resultat} - ${issue} ${bonus !== 0 ? `(bonus/malus ${bonus > 0 ? '+' : ''}${bonus})` : ''}</h2>
     `;
 
-    // Console fun ✅
+    // 🔹 Console fun
     console.log(`🎲 Lancer de dé :
-👤 ID compte : ${user.id}
-🧙 Personnage : ${characterName}
-📊 Statistique : ${stat} (${statValeur})
-🎯 Valeur du dé : ${resultat}
-🏆 Résultat : ${issue}`);
+        👤 ID compte : ${user.id}
+        🧙 Personnage : ${characterName}
+        📊 Statistique : ${stat} (${baseStat})
+        ➕ Bonus/Malus : ${bonus}
+        🎯 Valeur du dé : ${resultat}
+        🏆 Résultat : ${issue}`);
 
+    // 🔹 Enregistrer dans l'historique
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
+
+    // 🔹 Réinitialiser le bonus/malus temporaire après utilisation
+    if (bonus !== 0) {
+        await fetch(`${API_PERSONNAGES}?id=eq.${perso.id}`, {
+            method: "PATCH",
+            headers: { 
+                "Content-Type": "application/json", 
+                "apikey": SUPABASE_KEY, 
+                "Authorization": `Bearer ${SUPABASE_KEY}` 
+            },
+            body: JSON.stringify({ modifier_temporaire: 0 })
+        });
+    }
 }
 
 
