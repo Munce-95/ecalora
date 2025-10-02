@@ -233,15 +233,11 @@ async function lancerDe(stat) {
     });
     const data = await response.json();
 
-    if (!Array.isArray(data) || data.length === 0) {
-        alert("⚠️ Aucun personnage trouvé !");
-        return;
-    }
-
-    const perso = data[0];
-    const characterName = perso.nom; // pour affichage console et historique
-    const baseStat = perso[stat] || 0;
-    const bonus = perso.modifier_temporaire || 0;
+    // 🔹 Si aucun personnage trouvé, utiliser valeurs par défaut
+    const perso = (Array.isArray(data) && data.length > 0) ? data[0] : null;
+    const characterName = perso ? perso.nom : "Inconnu";
+    const baseStat = perso ? (perso[stat] || 0) : 50;
+    const bonus = perso ? (perso.modifier_temporaire || 0) : 0;
 
     const statValeur = baseStat + bonus;
     const issue = determinerIssue(resultat, statValeur);
@@ -265,7 +261,7 @@ async function lancerDe(stat) {
     await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
 
     // 🔹 Réinitialiser le bonus/malus temporaire après utilisation
-    if (bonus !== 0) {
+    if (perso && bonus !== 0) {
         await fetch(`${API_PERSONNAGES}?id=eq.${perso.id}`, {
             method: "PATCH",
             headers: { 
@@ -277,6 +273,7 @@ async function lancerDe(stat) {
         });
     }
 }
+
 
 
 
