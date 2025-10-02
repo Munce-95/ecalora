@@ -130,14 +130,14 @@ button:hover {
    ZONE CENTRALE (MJ + PV)
 ======================= */
 #zone-centrale {
-    position: fixed; /* reste au centre même en scroll */
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* espace entre bonus/malus et PV */
+    gap: 20px;
 }
 
 /* =======================
@@ -145,13 +145,12 @@ button:hover {
 ======================= */
 #bonus-malus-container {
     width: 300px;
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     text-align: center;
-    display: none; /* visible uniquement via JS pour MJ */
-    opacity: 82%;
+    display: none;
 }
 
 #bonus-malus-container h3 {
