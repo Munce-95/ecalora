@@ -91,36 +91,39 @@ async function afficherHealth() {
 
 async function changementHealth() {
     try {
-        // Récupérer la valeur entrée dans l’input
-        let NewHealthValue = parseInt(document.getElementById("health-value").value, 10);
+        let input = document.getElementById("health-value");
+        let newHealth = parseInt(input.value, 10);
 
-        if (isNaN(NewHealthValue)) {
-            alert("⚠️ Merci d'entrer un nombre valide pour tes PV.");
-            return;
-        }
+        if (isNaN(newHealth)) return alert("⚠️ Entre un nombre valide pour tes PV.");
 
-        // 🔹 Update uniquement le personnage lié à l'utilisateur connecté
-        let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}`, {
+        // Récupérer le joueur actuel
+        let res = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=max_pdv`, {
+            headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+        });
+        let [joueur] = await res.json();
+        if (!joueur) return alert("❌ Personnage introuvable.");
+
+        // Clamp entre 0 et max_pdv
+        newHealth = Math.min(Math.max(newHealth, 0), joueur.max_pdv);
+
+        // Update direct
+        let update = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}`, {
             method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-                "apikey": SUPABASE_KEY,
-                "Authorization": `Bearer ${SUPABASE_KEY}`
-            },
-            body: JSON.stringify({ pdv: NewHealthValue })
+            headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` },
+            body: JSON.stringify({ pdv: newHealth })
         });
 
-        if (!response.ok) throw new Error(`Erreur update PV: ${response.status}`);
+        if (!update.ok) throw new Error(update.statusText);
 
-        console.log(`✅ PV mis à jour à ${NewHealthValue} pour ton personnage !`);
-
-        // Recharge immédiatement l'affichage des barres de vie
+        console.log(`✅ PV mis à jour à ${newHealth}`);
         afficherHealth();
+        input.value = "";
 
-    } catch (error) {
-        console.error("❌ Impossible de modifier les PV :", error);
+    } catch (err) {
+        console.error("❌ Erreur changementHealth:", err);
     }
 }
+
 
 
 
