@@ -198,7 +198,7 @@ async function appliquerBonusMalus() {
         if (isNaN(bonus)) return alert("⚠️ Entre une valeur valide pour le bonus/malus.");
 
         // PATCH direct sur modifier_temporaire comme pour PV
-        let update = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
+        let update = await fetch(`${API_PERSONNAGES}?user_id=eq.${playerId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
