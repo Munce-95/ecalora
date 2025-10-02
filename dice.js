@@ -209,11 +209,9 @@ async function appliquerBonusMalus() {
             body: JSON.stringify({ modifier_temporaire: bonus })
         });
 
-        const respData = await response.json(); // log de la réponse Supabase
-
         if (!response.ok) {
-            console.error("❌ Réponse Supabase :", respData);
-            throw new Error(`HTTP ${response.status} - ${JSON.stringify(respData)}`);
+            const text = await response.text(); // lire le texte de l'erreur
+            throw new Error(`HTTP ${response.status} - ${text}`);
         }
 
         console.log(`🎯 Bonus/Malus de ${bonus} appliqué à l'ID ${playerId} pour la stat ${stat}`);
@@ -225,6 +223,7 @@ async function appliquerBonusMalus() {
         console.error("❌ Erreur lors de l'application du bonus/malus :", err);
     }
 }
+
 
 
 
