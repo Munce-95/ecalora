@@ -186,18 +186,19 @@ function afficherBonusMalusUI() {
 }
 
 async function appliquerBonusMalus() {
-    const playerSelect = document.getElementById("player-select");
-    const statSelect = document.getElementById("stat-select");
-    const bonusInput = document.getElementById("bonus-value");
-
-    const playerId = playerSelect.value.trim();
-    const stat = statSelect.value;
-    const bonus = parseInt(bonusInput.value, 10);
-
-    if (isNaN(bonus)) return alert("⚠️ Entre une valeur valide pour le bonus/malus.");
-
     try {
-        const response = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
+        const playerSelect = document.getElementById("player-select");
+        const statSelect = document.getElementById("stat-select");
+        const bonusInput = document.getElementById("bonus-value");
+
+        const playerId = playerSelect.value.trim();
+        const stat = statSelect.value;
+        const bonus = parseInt(bonusInput.value, 10);
+
+        if (isNaN(bonus)) return alert("⚠️ Entre une valeur valide pour le bonus/malus.");
+
+        // PATCH direct sur modifier_temporaire comme pour PV
+        let update = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
@@ -207,14 +208,10 @@ async function appliquerBonusMalus() {
             body: JSON.stringify({ modifier_temporaire: bonus })
         });
 
-        // Ici on ne fait plus response.json(), juste vérification
-        if (!response.ok) {
-            const text = await response.text(); // récupérer le texte d'erreur si nécessaire
-            throw new Error(`HTTP ${response.status} - ${text}`);
-        }
+        if (!update.ok) throw new Error(update.statusText);
 
         console.log(`🎯 Bonus/Malus de ${bonus} appliqué à l'ID ${playerId} pour la stat ${stat}`);
-        alert(`Bonus/Malus appliqué !`);
+        alert("Bonus/Malus appliqué !");
 
         bonusInput.value = "";
 
