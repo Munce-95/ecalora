@@ -213,7 +213,7 @@ async function appliquerBonusMalus() {
                 "apikey": SUPABASE_KEY,
                 "Authorization": `Bearer ${SUPABASE_KEY}`
             },
-            body: JSON.stringify({ temporary_modifier: bonus }) // colonne temporaire à créer dans characters
+            body: JSON.stringify({ modifier_temporaire: bonus }) // colonne temporaire à créer dans characters
         });
 
         if (!res.ok) throw new Error(res.statusText);
