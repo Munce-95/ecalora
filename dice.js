@@ -196,8 +196,6 @@ async function appliquerBonusMalus() {
 
     if (isNaN(bonus)) return alert("⚠️ Entre une valeur valide pour le bonus/malus.");
 
-    console.log("💡 Tentative d'application du bonus/malus :", { playerId, stat, bonus });
-
     try {
         const response = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
             method: "PATCH",
@@ -209,8 +207,9 @@ async function appliquerBonusMalus() {
             body: JSON.stringify({ modifier_temporaire: bonus })
         });
 
+        // Ici on ne fait plus response.json(), juste vérification
         if (!response.ok) {
-            const text = await response.text(); // lire le texte de l'erreur
+            const text = await response.text(); // récupérer le texte d'erreur si nécessaire
             throw new Error(`HTTP ${response.status} - ${text}`);
         }
 
@@ -223,8 +222,6 @@ async function appliquerBonusMalus() {
         console.error("❌ Erreur lors de l'application du bonus/malus :", err);
     }
 }
-
-
 
 
 // =======================
