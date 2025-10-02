@@ -331,11 +331,13 @@ async function enregistrerHistorique(userId, characterName, stat, resultat, issu
 document.addEventListener("DOMContentLoaded", () => {
     afficherHealth();
     chargerHistorique();
+
     // Afficher bonus/malus uniquement pour Zevra
-    if (user.username === "Zevra") {
+    if (user.pseudo === "Zevra" || user.id === "ce6d1c52-24b9-412f-a3e1-674cbb3ec71f") {
         document.getElementById("bonus-malus-container").style.display = "block";
     }
 
     setInterval(afficherHealth, 1000);
     setInterval(chargerHistorique, 1000);
 });
+
