@@ -89,6 +89,41 @@ async function afficherHealth() {
     }
 }
 
+async function changementHealth() {
+    try {
+        // Récupérer la valeur entrée dans l’input
+        let NewHealthValue = parseInt(document.getElementById("health-value").value, 10);
+
+        if (isNaN(NewHealthValue)) {
+            alert("⚠️ Merci d'entrer un nombre valide pour tes PV.");
+            return;
+        }
+
+        // 🔹 Update uniquement le personnage lié à l'utilisateur connecté
+        let response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({ pdv: NewHealthValue })
+        });
+
+        if (!response.ok) throw new Error(`Erreur update PV: ${response.status}`);
+
+        console.log(`✅ PV mis à jour à ${NewHealthValue} pour ton personnage !`);
+
+        // Recharge immédiatement l'affichage des barres de vie
+        afficherHealth();
+
+    } catch (error) {
+        console.error("❌ Impossible de modifier les PV :", error);
+    }
+}
+
+
+
 // =======================
 // HISTORIQUE DES JETS
 // =======================
