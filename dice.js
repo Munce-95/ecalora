@@ -186,38 +186,36 @@ function afficherBonusMalusUI() {
 }
 
 async function appliquerBonusMalus() {
-    // Vérifier que seul Zevra peut utiliser la fonction
-    if (user.pseudo !== "Zevra") return alert("⚠️ Seul Zevra peut appliquer un bonus/malus.");
-
-    // Récupération des valeurs
     const playerSelect = document.getElementById("player-select");
     const statSelect = document.getElementById("stat-select");
     const bonusInput = document.getElementById("bonus-value");
 
-    const playerId = playerSelect?.value;
-    const stat = statSelect?.value;
-    const bonus = parseInt(bonusInput?.value, 10);
+    const playerId = playerSelect.value;
+    const stat = statSelect.value;
+    const bonus = parseInt(bonusInput.value, 10);
 
-    // Validation
-    if (!playerId || !stat || isNaN(bonus)) return alert("⚠️ Veuillez remplir toutes les informations correctement.");
+    if (isNaN(bonus)) return alert("⚠️ Entre une valeur valide pour le bonus/malus.");
 
-    // DEBUG console
-    console.log(`🎯 Bonus/Malus de ${bonus} appliqué à l'ID ${playerId} pour la stat ${stat}`);
-
-    // Mise à jour dans la table characters
     try {
-        const res = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
+        // PATCH sur la bonne colonne
+        const response = await fetch(`${API_PERSONNAGES}?id=eq.${playerId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 "apikey": SUPABASE_KEY,
                 "Authorization": `Bearer ${SUPABASE_KEY}`
             },
-            body: JSON.stringify({ modifier_temporaire: bonus }) // colonne temporaire à créer dans characters
+            body: JSON.stringify({ modifier_temporaire: bonus })
         });
 
-        if (!res.ok) throw new Error(res.statusText);
-        alert(`✅ Bonus/Malus appliqué !`);
+        if (!response.ok) throw new Error(await response.text());
+
+        console.log(`🎯 Bonus/Malus de ${bonus} appliqué à l'ID ${playerId} pour la stat ${stat}`);
+        alert(`Bonus/Malus appliqué !`);
+
+        // reset input
+        bonusInput.value = "";
+
     } catch (err) {
         console.error("❌ Erreur lors de l'application du bonus/malus :", err);
     }
