@@ -1,4 +1,6 @@
-/* Reset de base */
+/* =======================
+   RESET DE BASE
+======================= */
 * {
     margin: 0;
     padding: 0;
@@ -14,13 +16,17 @@ body {
     background-position: center top -18%;
 }
 
-/* Titre de la page */
+/* =======================
+   TITRE DE LA PAGE
+======================= */
 #titre-page {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Colonne gauche */
+/* =======================
+   COLONNE GAUCHE
+======================= */
 #Colonne-gauche {
     position: absolute;
     left: 10%;
@@ -28,6 +34,7 @@ body {
     width: 300px;
 }
 
+/* ⚡ Case boutons stats et dégâts */
 #case-bouton-stat, #case-degat {
     background: white;
     padding: 15px;
@@ -37,6 +44,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* ⚡ Résultat des jets */
 #result-box {
     background: white;
     padding: 15px;
@@ -47,6 +55,7 @@ body {
     margin-bottom: 20px;
 }
 
+/* ⚡ Grid des boutons de stats */
 .buttons-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -54,6 +63,7 @@ body {
     padding: 6px;
 }
 
+/* ⚡ Style général des boutons */
 button {
     padding: 10px;
     border: none;
@@ -68,7 +78,9 @@ button:hover {
     background-color: #113126;
 }
 
-/* Colonne droite */
+/* =======================
+   COLONNE DROITE
+======================= */
 #Colonne-droite {
     position: absolute;
     right: 10%;
@@ -83,6 +95,7 @@ button:hover {
     overflow: auto;
 }
 
+/* ⚡ Historique */
 #ecalorahisto {
     list-style: none;
     margin-top: 10px;
@@ -96,7 +109,9 @@ button:hover {
     background-color: #c38080;
 }
 
-/* Position du bouton retour */
+/* =======================
+   BOUTON RETOUR
+======================= */
 #bouton-retour {
     position: absolute;
     top: 10px;
@@ -111,9 +126,11 @@ button:hover {
     background-color: #271200;
 }
 
-/* 🔹 Zone centrale pour MJ + PV */
+/* =======================
+   ZONE CENTRALE (MJ + PV)
+======================= */
 #zone-centrale {
-    position: fixed; /* rester au centre de l'écran même en scroll */
+    position: fixed; /* reste au centre même en scroll */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -123,7 +140,9 @@ button:hover {
     gap: 20px; /* espace entre bonus/malus et PV */
 }
 
-/* 🔹 Bonus/Malus MJ */
+/* =======================
+   BONUS/MALUS MJ
+======================= */
 #bonus-malus-container {
     width: 300px;
     background: white;
@@ -131,7 +150,7 @@ button:hover {
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
     text-align: center;
-    display: none;
+    display: none; /* visible uniquement via JS pour MJ */
     opacity: 82%;
 }
 
@@ -170,7 +189,9 @@ button:hover {
     background-color: #113126;
 }
 
-/* 🔹 Container des barres de vie */
+/* =======================
+   CONTAINER BARRES DE VIE
+======================= */
 #health-container {
     width: 300px;
     padding: 15px;
@@ -179,10 +200,10 @@ button:hover {
     text-align: center;
     background: white;
     opacity: 82%;
-    margin-bottom: 15px; /* espace avec la zone édition */
+    margin-bottom: 15px;
 }
 
-/* Styles des barres de vie */
+/* ⚡ Styles des barres de vie */
 .player-health {
     margin-bottom: 12px;
 }
@@ -206,7 +227,9 @@ button:hover {
     transition: width 0.5s ease;
 }
 
-/* 🔹 Zone édition PV */
+/* =======================
+   ZONE EDITION PV
+======================= */
 #health-edit {
     width: 300px;
     padding: 10px;
@@ -241,4 +264,3 @@ button:hover {
 #health-edit button:hover {
     background-color: #113126;
 }
-
