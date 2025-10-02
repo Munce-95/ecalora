@@ -344,6 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
     chargerHistorique();
     afficherBonusMalusUI();
 
+    if (user.pseudo === "Zevra") {
+        const healthEdit = document.getElementById("health-edit");
+        if (healthEdit) healthEdit.style.display = "none";
+    }
+
     setInterval(afficherHealth, 1000);
     setInterval(chargerHistorique, 1000);
 });
