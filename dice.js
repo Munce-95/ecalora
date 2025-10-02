@@ -175,19 +175,36 @@ async function resetHistorique() {
 
 
 // =======================
-// BONUS/MALUS MJ
+// BONUS/MALUS (MJ uniquement)
 // =======================
-async function appliquerBonusMalus(characterId, valeur) {
-    await fetch(`${API_PERSONNAGES}?id=eq.${characterId}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "apikey": SUPABASE_KEY,
-            "Authorization": `Bearer ${SUPABASE_KEY}`
-        },
-        body: JSON.stringify({ modifier_temporaire: valeur })
-    });
-    console.log(`⚡ Bonus/Malus appliqué : ${valeur} à ${characterId}`);
+function afficherBonusMalusUI() {
+    const container = document.getElementById("bonus-malus-container");
+    if (!container) return;
+
+    // Seul Zevra voit cette zone
+    container.style.display = (user.pseudo === "Zevra") ? "block" : "none";
+}
+
+async function appliquerBonusMalus(targetId, stat, valeur) {
+    if (user.pseudo !== "Zevra") {
+        console.warn("❌ Seul le MJ peut appliquer un bonus/malus.");
+        return;
+    }
+
+    try {
+        await fetch(`${API_PERSONNAGES}?id=eq.${targetId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`
+            },
+            body: JSON.stringify({ modifier_temporaire: valeur })
+        });
+        console.log(`✅ Bonus/Malus de ${valeur} appliqué à ${targetId} pour la stat ${stat}`);
+    } catch (err) {
+        console.error("❌ Erreur appliquerBonusMalus :", err);
+    }
 }
 
 // =======================
@@ -314,6 +331,10 @@ async function enregistrerHistorique(userId, characterName, stat, resultat, issu
 document.addEventListener("DOMContentLoaded", () => {
     afficherHealth();
     chargerHistorique();
+    // Afficher bonus/malus uniquement pour Zevra
+    if (user.username === "Zevra") {
+        document.getElementById("bonus-malus-container").style.display = "block";
+    }
 
     setInterval(afficherHealth, 1000);
     setInterval(chargerHistorique, 1000);
