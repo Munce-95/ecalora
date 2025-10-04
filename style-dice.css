@@ -36,7 +36,7 @@ body {
 
 /* ⚡ Case boutons stats et dégâts */
 #case-bouton-stat, #case-degat {
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -46,7 +46,7 @@ body {
 
 /* ⚡ Résultat des jets */
 #result-box {
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -86,7 +86,7 @@ button:hover {
     right: 10%;
     top: 15%;
     width: 300px;
-    background: white;
+    background: rgba(255, 255, 255, 0.82);
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
