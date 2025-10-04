@@ -130,7 +130,7 @@ button:hover {
    ZONE CENTRALE (MJ + PV)
 ======================= */
 #zone-centrale {
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
