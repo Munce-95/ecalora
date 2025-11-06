@@ -136,7 +136,7 @@ async function chargerHistorique() {
     if (!container) return;
 
     try {
-        const resp = await fetch(`${API_HISTORIQUE}?order=created_at.desc&limit=10`, {
+        const resp = await fetch(`${API_HISTORIQUE}?order=created_at.desc&limit=100`, {
             headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
         });
         const data = await resp.json();
@@ -150,25 +150,27 @@ function afficherHistorique(jets) {
     const container = document.getElementById("ecalorahisto");
     if (!container) return;
 
-    bonus = jets.bonus;
-    console.log(bonus);
-
     container.innerHTML = "";
+
     jets.forEach(jet => {
-        if (bonus = 0){
-            const statLabel = STAT_LABELS[jet.stat] || jet.stat;
-            const li = document.createElement("li");
+        const modif = jet.bonus || 0;
+        const statLabel = STAT_LABELS[jet.stat] || jet.stat;
+        const li = document.createElement("li");
+        if (modif = 0){
             li.innerHTML = `<strong>${jet.character_name}</strong><br>
-                            <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}<br>----------------------`;
-            container.appendChild(li);
+                            <strong>${statLabel}</strong> : ${jet.result}<br>
+                            ${jet.issue}<br>
+                            ----------------------`;
+            
         }
         else {
-            const statLabel = STAT_LABELS[jet.stat] || jet.stat;
-            const li = document.createElement("li");
             li.innerHTML = `<strong>${jet.character_name}</strong><br>
-                            <strong>${statLabel}</strong> : ${jet.result}<br>(Modificateur : ${bonus})<br>${jet.issue}<br>----------------------`;
-            container.appendChild(li);
+                            <strong>${statLabel}</strong> : ${jet.result}<br>
+                            (Modificateur : ${modif})<br>
+                            ${jet.issue}<br>
+                            ----------------------`;
         }
+        container.appendChild(li);
     });
 }
 
@@ -260,7 +262,7 @@ async function lancerDe(stat) {
         <h2>${resultat} - ${issue} ${bonus !== 0 ? `(bonus/malus ${bonus > 0 ? '+' : ''}${bonus})` : ''}</h2>
     `;
 
-    // 🔹 Console fun
+    // 🔹 Console
     console.log(`🎲 Lancer de dé :
         👤 ID compte : ${user.id}
         🧙 Personnage : ${characterName}
@@ -347,7 +349,6 @@ async function lancerDeNeutre() {
 
 async function enregistrerHistorique(userId, characterName, stat, resultat, issue, bonus) {
     const jetData = { user_id: userId, character_name: characterName, stat, result: resultat, issue, bonus };
-
     try {
         await fetch(`${SUPABASE_URL}/rest/v1/ecalorahisto`, {
             method: "POST",
