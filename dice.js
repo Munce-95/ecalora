@@ -294,7 +294,8 @@ async function lancerDegats() {
     const resp = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=nom`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
-    const characterName = (Array.isArray(resp) && resp.length > 0) ? (await resp.json())[0].nom : "Inconnu";
+    const perso = (Array.isArray(data) && data.length > 0) ? data[0] : null;
+    const characterName = perso ? perso.nom : "Inconnu";
 
     document.getElementById("resultat").innerHTML = `
         <h3>Résultat pour "<strong>Dégâts (D${degatType})</strong>" :</h3>
