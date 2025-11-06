@@ -155,7 +155,7 @@ function afficherHistorique(jets) {
         const statLabel = STAT_LABELS[jet.stat] || jet.stat;
         const li = document.createElement("li");
         li.innerHTML = `<strong>${jet.character_name}</strong><br>
-                        <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}<br>----------------------`;
+                        <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue} (${jet.bonus})<br>----------------------`;
         container.appendChild(li);
     });
 }
@@ -258,7 +258,7 @@ async function lancerDe(stat) {
         🏆 Résultat : ${issue}`);
 
     // 🔹 Enregistrer dans l'historique
-    await enregistrerHistorique(user.id, characterName, stat, resultat, issue);
+    await enregistrerHistorique(user.id, characterName, stat, resultat, issue, bonus);
 
     // 🔹 Réinitialiser le bonus/malus temporaire après utilisation
     if (perso && bonus !== 0) {
@@ -333,8 +333,8 @@ async function lancerDeNeutre() {
 // ENREGISTREMENT DES JETS
 // =======================
 
-async function enregistrerHistorique(userId, characterName, stat, resultat, issue) {
-    const jetData = { user_id: userId, character_name: characterName, stat, result: resultat, issue };
+async function enregistrerHistorique(userId, characterName, stat, resultat, issue, bonus) {
+    const jetData = { user_id: userId, character_name: characterName, stat, result: resultat, issue, bonus };
 
     try {
         await fetch(`${SUPABASE_URL}/rest/v1/ecalorahisto`, {
