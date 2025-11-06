@@ -281,6 +281,12 @@ async function lancerDegats() {
     const degatInput = document.getElementById("degatsInput").value;
     const degatType = parseInt(degatInput, 10);
 
+    // 🔹 Récupérer le personnage actuel (id et nom uniquement)
+    const response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
+    }); 
+    const data = await response.json();
+
     if (isNaN(degatType) || degatType < 2) return alert("Veuillez entrer un type de dé valide.");
 
     const resultat = Math.floor(Math.random() * degatType) + 1;
