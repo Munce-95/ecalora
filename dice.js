@@ -156,7 +156,7 @@ function afficherHistorique(jets) {
         const modif = jet.bonus || 0;
         const statLabel = STAT_LABELS[jet.stat] || jet.stat;
         const li = document.createElement("li");
-        if (modif = 0){
+        if (modif === 0){
             li.innerHTML = `<strong>${jet.character_name}</strong><br>
                             <strong>${statLabel}</strong> : ${jet.result}<br>
                             ${jet.issue}<br>
