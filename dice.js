@@ -152,11 +152,20 @@ function afficherHistorique(jets) {
 
     container.innerHTML = "";
     jets.forEach(jet => {
-        const statLabel = STAT_LABELS[jet.stat] || jet.stat;
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>${jet.character_name}</strong><br>
-                        <strong>${statLabel}</strong> : ${jet.result} (Modificateur : ${jet.bonus})<br>${jet.issue}<br>----------------------`;
-        container.appendChild(li);
+        if (jet.bonus = 0){
+            const statLabel = STAT_LABELS[jet.stat] || jet.stat;
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${jet.character_name}</strong><br>
+                            <strong>${statLabel}</strong> : ${jet.result}<br>${jet.issue}<br>----------------------`;
+            container.appendChild(li);
+        }
+        else {
+            const statLabel = STAT_LABELS[jet.stat] || jet.stat;
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${jet.character_name}</strong><br>
+                            <strong>${statLabel}</strong> : ${jet.result} (Modificateur : ${jet.bonus})<br>${jet.issue}<br>----------------------`;
+            container.appendChild(li);
+        }
     });
 }
 
