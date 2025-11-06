@@ -150,10 +150,11 @@ function afficherHistorique(jets) {
     const container = document.getElementById("ecalorahisto");
     if (!container) return;
 
+    bonus = jets.bonus;
+    console.log(bonus);
+
     container.innerHTML = "";
     jets.forEach(jet => {
-        bonus = jet.bonus
-        console.log(bonus)
         if (bonus = 0){
             const statLabel = STAT_LABELS[jet.stat] || jet.stat;
             const li = document.createElement("li");
