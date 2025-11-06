@@ -301,12 +301,19 @@ async function lancerDegats() {
 async function lancerDeNeutre() {
     const resultat = random_roll();
 
+    // 🔹 Récupérer le personnage actuel (id et nom uniquement)
+    const response = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=id,nom`, {
+        headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
+    }); 
+    const data = await response.json();
+
+
     const resp = await fetch(`${API_PERSONNAGES}?user_id=eq.${user.id}&select=nom`, {
         headers: { "Content-Type": "application/json", "apikey": SUPABASE_KEY }
     });
     const perso = (Array.isArray(data) && data.length > 0) ? data[0] : null;
     const characterName = perso ? perso.nom : "Inconnu";
-    
+
     document.getElementById("resultat").innerHTML = `
         <h3>Résultat du "<strong>Dé 100</strong>" :</h3>
         <h2>${resultat}</h2>
