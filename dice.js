@@ -166,7 +166,7 @@ function afficherHistorique(jets) {
         else {
             li.innerHTML = `<strong>${jet.character_name}</strong><br>
                             <strong>${statLabel}</strong> : ${jet.result}<br>
-                            (Modificateur : ${modif})<br>
+                            (Modificateur : ${modif !== 0 ? `${modif > 0 ? '+' : ''}${modif}` : ''})<br>
                             ${jet.issue}<br>
                             ----------------------`;
         }
